@@ -37,6 +37,7 @@ func Main() {
 	config, err := LoadConfiguration(opts)
 	if err != nil {
 		fmt.Println(err)
+		log.Error("LoadConfiguration error:%v", err)
 		os.Exit(1)
 	}
 

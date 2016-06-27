@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"ngrok/version"
 	"os"
+	"os/user"
 )
 
 const usage1 string = `Usage: %s [OPTIONS] <local port or address>
@@ -60,9 +61,17 @@ func ParseArgs() (opts *Options, err error) {
 		"",
 		"Path to ngrok configuration file. (default: $HOME/.ngrok)")
 
+	logpath := "none"
+	user, err := user.Current()
+	if err == nil {
+		_logpath := user.HomeDir + "/ngrok_log/"
+		os.Mkdir(_logpath, os.ModePerm)
+		logpath = _logpath + "ngrok.log"
+	}
+
 	logto := flag.String(
 		"log",
-		"none",
+		logpath,
 		"Write log messages to this file. 'stdout' and 'none' have special meanings")
 
 	loglevel := flag.String(
@@ -123,11 +132,14 @@ func ParseArgs() (opts *Options, err error) {
 		flag.Usage()
 		os.Exit(0)
 	case "":
-		err = fmt.Errorf("Error: Specify a local port to tunnel to, or " +
-			"an ngrok command.\n\nExample: To expose port 80, run " +
-			"'ngrok 80'")
-		return
-
+		opts.args = []string{}
+		opts.command = "start-all"
+		/*
+			err = fmt.Errorf("Error: Specify a local port to tunnel to, or " +
+				"an ngrok command.\n\nExample: To expose port 80, run " +
+				"'ngrok 80'")
+			return
+		*/
 	default:
 		if len(flag.Args()) > 1 {
 			err = fmt.Errorf("You may only specify one port to tunnel to on the command line, got %d: %v",
