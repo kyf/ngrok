@@ -165,8 +165,8 @@ func (ctl *Controller) Run(config *Configuration) {
 	// init term ui
 	var termView *term.TermView
 	if config.LogTo != "stdout" {
-		termView = term.NewTermView(ctl)
-		ctl.AddView(termView)
+		//termView = term.NewTermView(ctl)
+		//ctl.AddView(termView)
 	}
 
 	for _, protocol := range model.GetProtocols() {
